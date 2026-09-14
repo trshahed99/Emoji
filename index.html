@@ -9,189 +9,205 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
-        /* ============================================
-           বেসিক স্টাইল - নিয়ন থিম
-           ============================================ */
+        /* ==================================================
+           বেসিক রিসেট
+           ================================================== */
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* ==================================================
+           বডি - নিয়ন ব্যাকগ্রাউন্ড
+           ================================================== */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #05050a;
+            background-color: #05050a;
             background-image:
-                radial-gradient(circle at 20% 20%, rgba(0, 240, 255, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 0, 127, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 20% 15%, rgba(0, 240, 255, 0.10) 0%, transparent 45%),
+                radial-gradient(circle at 80% 85%, rgba(255, 0, 127, 0.10) 0%, transparent 45%);
             color: #ffffff;
-            margin: 0;
-            padding: 15px;
             min-height: 100vh;
+            padding: 20px 15px;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow-x: hidden;
         }
 
-        /* ============================================
+        /* ==================================================
            মূল কার্ড
-           ============================================ */
+           ================================================== */
         .card {
             background: rgba(15, 23, 42, 0.85);
-            padding: 25px 20px;
-            border-radius: 20px;
+            padding: 30px 22px;
+            border-radius: 24px;
             border: 2px solid #00f0ff;
             box-shadow:
-                0 0 20px rgba(0, 240, 255, 0.4),
-                inset 0 0 15px rgba(0, 240, 255, 0.15);
+                0 0 25px rgba(0, 240, 255, 0.40),
+                inset 0 0 20px rgba(0, 240, 255, 0.15);
             text-align: center;
             width: 100%;
-            max-width: 400px;
-            backdrop-filter: blur(10px);
+            max-width: 420px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             animation: cardIn 0.6s ease-out;
         }
 
         @keyframes cardIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(25px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ============================================
+        /* ==================================================
            হেডিং
-           ============================================ */
-        h2 {
+           ================================================== */
+        h1 {
             color: #00f0ff;
             text-shadow:
-                0 0 10px rgba(0, 240, 255, 0.8),
-                0 0 20px rgba(0, 240, 255, 0.5);
-            margin: 0 0 5px 0;
-            font-size: 26px;
+                0 0 10px rgba(0, 240, 255, 0.9),
+                0 0 25px rgba(0, 240, 255, 0.5);
+            font-size: 28px;
             letter-spacing: 1px;
+            margin-bottom: 6px;
         }
 
         .subtitle {
             color: #94a3b8;
             font-size: 13px;
-            margin: 0 0 15px 0;
+            margin-bottom: 18px;
+            letter-spacing: 0.5px;
         }
 
-        /* ============================================
+        /* ==================================================
            প্রোফাইল ছবি
-           ============================================ */
-        .avatar-container {
+           ================================================== */
+        .avatar-wrapper {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 18px;
             position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 15px auto;
         }
 
         .avatar {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             border: 3px solid #ff007f;
-            box-shadow:
-                0 0 20px #ff007f,
-                0 0 40px rgba(255, 0, 127, 0.4);
             object-fit: cover;
             background: #1e293b;
-            animation: pulseGlow 2s ease-in-out infinite;
+            box-shadow:
+                0 0 20px #ff007f,
+                0 0 45px rgba(255, 0, 127, 0.45);
+            animation: pulseAvatar 2.2s ease-in-out infinite;
         }
 
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 20px #ff007f, 0 0 40px rgba(255, 0, 127, 0.4); }
-            50%      { box-shadow: 0 0 30px #ff007f, 0 0 60px rgba(255, 0, 127, 0.6); }
+        @keyframes pulseAvatar {
+            0%, 100% {
+                box-shadow: 0 0 20px #ff007f, 0 0 45px rgba(255, 0, 127, 0.45);
+            }
+            50% {
+                box-shadow: 0 0 30px #ff007f, 0 0 65px rgba(255, 0, 127, 0.65);
+            }
         }
 
-        /* ============================================
+        /* ==================================================
            স্ট্যাটাস টেক্সট
-           ============================================ */
-        .status-text {
+           ================================================== */
+        .status {
             font-size: 13px;
             color: #94a3b8;
-            margin: 0 0 10px 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
+            margin-bottom: 14px;
         }
 
-        .status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
+        .dot {
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
+            display: inline-block;
         }
-        .online  { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
-        .offline { background: #ff0044; box-shadow: 0 0 8px #ff0044; }
-        .loading { background: #ffcc00; box-shadow: 0 0 8px #ffcc00; }
+        .dot.online  { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+        .dot.offline { background: #ff0044; box-shadow: 0 0 10px #ff0044; }
+        .dot.loading { background: #ffcc00; box-shadow: 0 0 10px #ffcc00; animation: blink 1s infinite; }
 
-        /* ============================================
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ==================================================
            ইউজার ইনফো বক্স
-           ============================================ */
-        .user-box {
-            background: rgba(30, 41, 59, 0.7);
+           ================================================== */
+        .info-box {
+            background: rgba(30, 41, 59, 0.75);
             border: 1px solid #ff007f;
-            box-shadow: 0 0 10px rgba(255, 0, 127, 0.3);
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 10px;
+            box-shadow: 0 0 12px rgba(255, 0, 127, 0.35);
+            padding: 16px 18px;
+            border-radius: 14px;
             text-align: left;
+            margin-bottom: 18px;
         }
 
-        .user-box p {
+        .info-box p {
             color: #e2e8f0;
-            font-size: 13px;
-            margin: 8px 0;
-            word-break: break-all;
+            font-size: 13.5px;
+            margin: 9px 0;
+            word-break: break-word;
             line-height: 1.5;
         }
 
-        .user-box b {
+        .info-box b {
             color: #00f0ff;
-            text-shadow: 0 0 5px rgba(0, 240, 255, 0.5);
+            text-shadow: 0 0 6px rgba(0, 240, 255, 0.55);
         }
 
-        /* ============================================
+        /* ==================================================
            প্রিমিয়াম ব্যাজ
-           ============================================ */
+           ================================================== */
         .badge {
             display: inline-block;
-            padding: 2px 8px;
-            border-radius: 6px;
+            padding: 3px 9px;
+            border-radius: 7px;
             font-size: 10px;
             font-weight: bold;
-            margin-left: 5px;
+            margin-left: 6px;
             vertical-align: middle;
+            letter-spacing: 0.5px;
         }
 
         .badge-premium {
             background: linear-gradient(45deg, #ffd700, #ff8c00);
             color: #000;
-            box-shadow: 0 0 10px #ffd700;
+            box-shadow: 0 0 12px #ffd700;
         }
 
-        /* ============================================
+        /* ==================================================
            বাটন
-           ============================================ */
+           ================================================== */
         .btn {
             background: linear-gradient(45deg, #00f0ff, #ff007f);
-            color: white;
+            color: #ffffff;
             border: none;
-            padding: 14px 20px;
+            padding: 15px 20px;
             border-radius: 12px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            margin-top: 18px;
-            box-shadow: 0 0 20px rgba(255, 0, 127, 0.6);
-            transition: all 0.3s;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
+            box-shadow: 0 0 22px rgba(255, 0, 127, 0.6);
+            transition: all 0.25s ease;
         }
 
         .btn:active {
             transform: scale(0.96);
-            box-shadow: 0 0 8px rgba(255, 0, 127, 0.8);
+            box-shadow: 0 0 8px rgba(255, 0, 127, 0.9);
         }
 
         .btn:disabled {
@@ -200,40 +216,40 @@
             box-shadow: none;
         }
 
-        /* ============================================
-           লোডিং স্পিনার
-           ============================================ */
+        /* ==================================================
+           স্পিনার
+           ================================================== */
         .spinner {
             display: inline-block;
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
             border: 2px solid rgba(0, 240, 255, 0.3);
             border-top-color: #00f0ff;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             vertical-align: middle;
-            margin-right: 6px;
+            margin-right: 7px;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ============================================
+        /* ==================================================
            রিফ্রেশ বাটন
-           ============================================ */
+           ================================================== */
         .refresh-btn {
             background: transparent;
             color: #00f0ff;
             border: 1px solid #00f0ff;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 12px;
+            padding: 9px 18px;
+            border-radius: 9px;
+            font-size: 12.5px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 12px;
             transition: all 0.2s;
         }
 
         .refresh-btn:active {
-            background: rgba(0, 240, 255, 0.2);
+            background: rgba(0, 240, 255, 0.18);
         }
     </style>
 </head>
@@ -242,23 +258,23 @@
     <div class="card">
 
         <!-- প্রোফাইল ছবি -->
-        <div class="avatar-container">
+        <div class="avatar-wrapper">
             <img id="userPhoto" class="avatar" alt="Profile"
-                 src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%231e293b'/><circle cx='50' cy='40' r='15' fill='%2300f0ff'/><ellipse cx='50' cy='80' rx='25' ry='18' fill='%2300f0ff'/></svg>">
+                 src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%231e293b'/><circle cx='50' cy='40' r='16' fill='%2300f0ff'/><ellipse cx='50' cy='82' rx='26' ry='18' fill='%2300f0ff'/></svg>">
         </div>
 
         <!-- হেডিং -->
-        <h2>স্বাগতম! ⚡</h2>
+        <h1>স্বাগতম! ⚡</h1>
         <p class="subtitle">টেলিগ্রাম মিনি অ্যাপ • নিয়ন ডিজাইন</p>
 
         <!-- স্ট্যাটাস -->
-        <p class="status-text" id="statusText">
-            <span class="status-dot loading"></span>
-            সংযোগ করা হচ্ছে...
-        </p>
+        <div class="status" id="statusText">
+            <span class="dot loading"></span>
+            <span>সংযোগ করা হচ্ছে...</span>
+        </div>
 
-        <!-- ইউজার ইনফো বক্স -->
-        <div class="user-box" id="userInfo">
+        <!-- ইউজার ইনফো -->
+        <div class="info-box" id="userInfo">
             <p><span class="spinner"></span>টেলিগ্রাম থেকে তথ্য আনা হচ্ছে...</p>
         </div>
 
@@ -273,58 +289,63 @@
     </div>
 
     <script>
-        // ============================================
-        // কনফিগারেশন
-        // ============================================
-        // ⚠️ এখানে আপনার Cloudflare Worker URL বসান
-        const BACKEND_URL = 'https://your-worker.workers.dev/api/user';
-
-        // ============================================
+        // ==================================================
         // টেলিগ্রাম WebApp ইনিশিয়ালাইজ
-        // ============================================
+        // ==================================================
         const tg = window.Telegram.WebApp;
-        tg.expand();              // ফুল স্ক্রিন
-        tg.ready();               // রেডি সিগন্যাল
-        tg.setHeaderColor('#05050a');  // হেডার রঙ
-        tg.setBackgroundColor('#05050a'); // ব্যাকগ্রাউন্ড রঙ
 
-        // DOM এলিমেন্ট রেফারেন্স
-        const userDiv = document.getElementById('userInfo');
+        // ফুল স্ক্রিন মোড
+        tg.expand();
+        tg.ready();
+
+        // টেলিগ্রাম থিম সেট
+        try {
+            tg.setHeaderColor('#05050a');
+            tg.setBackgroundColor('#05050a');
+        } catch (e) { /* পুরনো ভার্সনে কাজ নাও করতে পারে */ }
+
+        // ==================================================
+        // DOM এলিমেন্ট
+        // ==================================================
+        const userInfoDiv = document.getElementById('userInfo');
         const userPhotoImg = document.getElementById('userPhoto');
-        const statusText = document.getElementById('statusText');
-        const actionBtn = document.getElementById('actionBtn');
+        const statusText   = document.getElementById('statusText');
+        const actionBtn    = document.getElementById('actionBtn');
 
-        // বর্তমান ইউজার ডাটা গ্লোবালি সেভ
+        // ইউজার ডাটা গ্লোবালি সেভ
         let currentUser = null;
 
-        // ============================================
-        // নাম থেকে ডিফল্ট অ্যাভাটার জেনারেট
-        // ============================================
+        // ==================================================
+        // ডিফল্ট অ্যাভাটার (নামের প্রথম অক্ষর)
+        // ==================================================
         function getDefaultAvatar(name) {
             const letter = (name || '?')[0].toUpperCase();
             const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
                 <circle cx='50' cy='50' r='50' fill='%231e293b'/>
-                <text x='50' y='68' font-size='48' text-anchor='middle'
+                <text x='50' y='68' font-size='46' text-anchor='middle'
                       fill='%2300f0ff' font-family='sans-serif'
                       font-weight='bold'>${letter}</text>
             </svg>`;
             return 'data:image/svg+xml;utf8,' + svg;
         }
 
-        // ============================================
-        // টেলিগ্রাম থেকে ইউজার ইনফো লোড
-        // ============================================
-        async function loadUserInfo() {
+        // ==================================================
+        // টেলিগ্রাম থেকে ইউজার ইনফো লোড (Backend ছাড়া)
+        // ==================================================
+        function loadUserInfo() {
             // রিসেট UI
             actionBtn.disabled = true;
             actionBtn.textContent = '⏳ লোড হচ্ছে...';
-            statusText.innerHTML = '<span class="status-dot loading"></span>সংযোগ করা হচ্ছে...';
-            userDiv.innerHTML = '<p><span class="spinner"></span>টেলিগ্রাম থেকে তথ্য আনা হচ্ছে...</p>';
+            statusText.innerHTML = '<span class="dot loading"></span><span>সংযোগ করা হচ্ছে...</span>';
+            userInfoDiv.innerHTML = '<p><span class="spinner"></span>টেলিগ্রাম থেকে তথ্য আনা হচ্ছে...</p>';
+
+            // টেলিগ্রাম থেকে ইউজার ডাটা
+            const tgUser = tg.initDataUnsafe && tg.initDataUnsafe.user;
 
             // টেলিগ্রামের বাইরে খোলা হলে
-            if (!tg.initData) {
-                statusText.innerHTML = '<span class="status-dot offline"></span>ব্রাউজার মোড';
-                userDiv.innerHTML = `
+            if (!tgUser) {
+                statusText.innerHTML = '<span class="dot offline"></span><span>ব্রাউজার মোড</span>';
+                userInfoDiv.innerHTML = `
                     <p><b>❌ স্ট্যাটাস:</b> টেলিগ্রামের বাইরে</p>
                     <p style="color: #ff007f;">দয়া করে টেলিগ্রাম বট থেকে খুলুন!</p>
                 `;
@@ -332,94 +353,81 @@
                 return;
             }
 
-            try {
-                // Cloudflare Worker-এ initData পাঠাই
-                const res = await fetch(BACKEND_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ initData: tg.initData })
-                });
+            // ইউজার সেভ
+            currentUser = tgUser;
 
-                const data = await res.json();
+            // স্ট্যাটাস আপডেট
+            statusText.innerHTML = '<span class="dot online"></span><span>সংযুক্ত ✓</span>';
 
-                // ভেরিফিকেশন ব্যর্থ হলে
-                if (!data.success) {
-                    throw new Error(data.error || 'ভেরিফিকেশন ব্যর্থ');
-                }
+            // প্রিমিয়াম ব্যাজ
+            const premiumBadge = tgUser.is_premium
+                ? '<span class="badge badge-premium">⭐ PREMIUM</span>'
+                : '';
 
-                // সফল — ডাটা সেভ করি
-                const u = data.user;
-                currentUser = u;
+            // সম্পূর্ণ নাম
+            const fullName = [tgUser.first_name, tgUser.last_name]
+                                .filter(Boolean).join(' ');
 
-                // স্ট্যাটাস আপডেট
-                statusText.innerHTML = '<span class="status-dot online"></span>ভেরিফাইড ✓';
+            // ইউজার ইনফো UI-তে দেখাই
+            userInfoDiv.innerHTML = `
+                <p><b>👤 নাম:</b> ${fullName}${premiumBadge}</p>
+                <p><b>🆔 ইউজার আইডি:</b> ${tgUser.id}</p>
+                <p><b>📛 ইউজারনেম:</b> @${tgUser.username || 'নেই'}</p>
+                <p><b>🌐 ভাষা:</b> ${tgUser.language_code || 'N/A'}</p>
+                <p><b>⚡ প্রিমিয়াম:</b> ${tgUser.is_premium ? 'হ্যাঁ' : 'না'}</p>
+            `;
 
-                // প্রিমিয়াম ব্যাজ (যদি প্রিমিয়াম হয়)
-                const premiumBadge = u.is_premium
-                    ? '<span class="badge badge-premium">⭐ PREMIUM</span>'
-                    : '';
-
-                // সম্পূর্ণ ইউজার ইনফো UI-তে দেখাই
-                userDiv.innerHTML = `
-                    <p><b>👤 নাম:</b> ${u.fullName}${premiumBadge}</p>
-                    <p><b>🆔 ইউজার আইডি:</b> ${u.id}</p>
-                    <p><b>📛 ইউজারনেম:</b> @${u.username || 'নেই'}</p>
-                    <p><b>🌐 ভাষা:</b> ${u.language_code || 'N/A'}</p>
-                    <p><b>⚡ প্রিমিয়াম:</b> ${u.is_premium ? 'হ্যাঁ' : 'না'}</p>
-                    <p><b>🕐 শেষ লগইন:</b> ${new Date(parseInt(data.auth_date) * 1000).toLocaleString('bn-BD')}</p>
-                `;
-
-                // প্রোফাইল ছবি
-                if (u.photo_url) {
-                    userPhotoImg.src = u.photo_url;
-                    userPhotoImg.onerror = () => {
-                        userPhotoImg.src = getDefaultAvatar(u.first_name);
-                    };
-                } else {
-                    userPhotoImg.src = getDefaultAvatar(u.first_name);
-                }
-
-                // অ্যাকশন বাটন চালু করি
-                actionBtn.disabled = false;
-                actionBtn.textContent = `হ্যালো ${u.first_name}! 🔥`;
-
-            } catch (err) {
-                console.error('Error:', err);
-                statusText.innerHTML = '<span class="status-dot offline"></span>সংযোগ ব্যর্থ';
-                userDiv.innerHTML = `
-                    <p><b>❌ ত্রুটি:</b> ${err.message}</p>
-                    <p style="color: #ff007f;">🔄 রিফ্রেশ বাটনে ক্লিক করুন</p>
-                `;
-                actionBtn.textContent = '⚡ ফাটফাটি অ্যাকশন';
+            // প্রোফাইল ছবি হ্যান্ডেল
+            if (tgUser.photo_url) {
+                userPhotoImg.src = tgUser.photo_url;
+                userPhotoImg.onerror = () => {
+                    userPhotoImg.src = getDefaultAvatar(tgUser.first_name);
+                };
+            } else {
+                userPhotoImg.src = getDefaultAvatar(tgUser.first_name);
             }
+
+            // অ্যাকশন বাটন চালু
+            actionBtn.disabled = false;
+            actionBtn.textContent = `হ্যালো ${tgUser.first_name}! 🔥`;
         }
 
-        // ============================================
-        // অ্যাকশন বাটনে ক্লিক হ্যান্ডলার
-        // ============================================
+        // ==================================================
+        // অ্যাকশন বাটন ক্লিক হ্যান্ডলার
+        // ==================================================
         function triggerAction() {
             if (!currentUser) return;
 
             // হ্যাপটিক ফিডব্যাক (ভাইব্রেশন)
             if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('medium');
+                try {
+                    tg.HapticFeedback.impactOccurred('medium');
+                } catch (e) { /* ignore */ }
             }
 
-            // টেলিগ্রামের নেটিভ পপআপ
+            // টেলিগ্রাম নেটিভ পপআপ
             tg.showPopup({
                 title: '⚡ অ্যাকশন সম্পন্ন',
-                message: `হ্যালো ${currentUser.first_name}!\n\n` +
-                         `আপনার আইডি: ${currentUser.id}\n` +
-                         `ইউজারনেম: @${currentUser.username || 'নেই'}\n\n` +
-                         `নিয়ন বাটন সাকসেসফুলি কাজ করছে! 🔥`,
+                message:
+                    `হ্যালো ${currentUser.first_name}!\n\n` +
+                    `আপনার আইডি: ${currentUser.id}\n` +
+                    `ইউজারনেম: @${currentUser.username || 'নেই'}\n\n` +
+                    `নিয়ন বাটন সাকসেসফুলি কাজ করছে! 🔥`,
                 buttons: [{ type: 'ok' }]
+            }, (buttonId) => {
+                // ইউজার OK চাপলে আরও একটি ফিডব্যাক
+                if (tg.HapticFeedback) {
+                    try { tg.HapticFeedback.notificationOccurred('success'); }
+                    catch (e) {}
+                }
             });
         }
 
-        // ============================================
-        // পেজ লোড হলেই ডাটা আনো
-        // ============================================
+        // ==================================================
+        // পেজ লোড হওয়ার সাথে সাথে ডাটা আনি
+        // ==================================================
         loadUserInfo();
+
     </script>
 
 </body>
