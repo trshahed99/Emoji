@@ -78,15 +78,22 @@ async function viewEmoji() {
         let data = await response.json();
 
         if (data.success) {
-            // ডিসপ্লে এরিয়া ক্লিয়ার করে নতুন কন্টেইনার বানানো
-            emojiDisplay.innerHTML = `<div id="lottieContainer" style="width: 90px; height: 90px; margin: 0 auto; display: flex; justify-content: center; align-items: center;"></div>`;
-            const container = document.getElementById('lottieContainer');
+            // ডিসপ্লে কন্টেইনার তৈরি
+            emojiDisplay.innerHTML = `<div id="emojiContainer" style="width: 100px; height: 100px; margin: 0 auto; display: flex; justify-content: center; align-items: center;"></div>`;
+            const container = document.getElementById('emojiContainer');
+            const filePath = data.path.toLowerCase();
 
-            if (data.path.endsWith('.tgs') || data.path.endsWith('.json')) {
-                // যদি টেলিগ্রামের TGS অ্যানিমেশন ফাইল হয়, তবে Lottie দিয়ে রেন্ডার করবে
-                // (যেহেতু টেলিগ্রামের tgs ফাইল কমপ্রেসড থাকে, সরাসরি জেসন লিংকের জন্য ব্রাউজার ফেচ করে লোড করবে)
+            // ১. TGS ফাইল (Telegram অ্যানিমেটেড ইমোজি)
+            if (filePath.endsWith('.tgs')) {
                 try {
-                    let animData = await fetch(data.url).then(res => res.json());
+                    // TGS ফাইল ডাউনলোড করে ArrayBuffer হিসেবে নেওয়া
+                    const arrayBuffer = await fetch(data.url).then(res => res.arrayBuffer());
+                    
+                    // pako দিয়ে GZIP ডিকম্প্রেস করা
+                    const decompressedData = pako.ungzip(new Uint8Array(arrayBuffer), { to: 'string' });
+                    const animData = JSON.parse(decompressedData);
+                    
+                    // Lottie দিয়ে রেন্ডার করা
                     lottie.loadAnimation({
                         container: container,
                         renderer: 'svg',
@@ -95,12 +102,27 @@ async function viewEmoji() {
                         animationData: animData
                     });
                 } catch (e) {
-                    // কোনো কারণে ফেচ না হলে ডিরেক্ট লিংক ভিডিও বা ইমেজ হিসেবে দেখানোর ফলব্যাক
-                    container.innerHTML = `<img src="${data.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
+                    console.error("TGS লোড এরর:", e);
+                    container.innerHTML = `<span style="color: #ef4444; font-size: 12px; text-align: center;">অ্যানিমেশন লোড হয়নি</span>`;
                 }
             } 
-            else if (data.path.endsWith('.webm') || data.path.endsWith('.mp4')) {
-                // ভিডিও ফরম্যাট হলে অটো-প্লে হবে
+            // ২. সাধারণ Lottie JSON ফাইল
+            else if (filePath.endsWith('.json')) {
+                try {
+                    const animData = await fetch(data.url).then(res => res.json());
+                    lottie.loadAnimation({
+                        container: container,
+                        renderer: 'svg',
+                        loop: true,
+                        autoplay: true,
+                        animationData: animData
+                    });
+                } catch (e) {
+                    container.innerHTML = `<span style="color: #ef4444; font-size: 12px;">JSON লোড এরর!</span>`;
+                }
+            }
+            // ৩. ভিডিও ফরম্যাট (.webm বা .mp4)
+            else if (filePath.endsWith('.webm') || filePath.endsWith('.mp4')) {
                 container.innerHTML = `
                     <video src="${data.url}" 
                            autoplay 
@@ -111,9 +133,18 @@ async function viewEmoji() {
                     </video>
                 `;
             } 
-            else {
-                // সাধারণ ছবি হলে
+            // ৪. ইমেজ ফরম্যাট (.webp, .png, .jpg, .gif)
+            else if (filePath.endsWith('.webp') || filePath.endsWith('.png') || filePath.endsWith('.jpg') || filePath.endsWith('.jpeg') || filePath.endsWith('.gif')) {
                 container.innerHTML = `<img src="${data.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
+            } 
+            // ৫. অজানা ফরম্যাট (Fallback: আগে ইমেজ হিসেবে ট্রাই করবে, না হলে ভিডিও হিসেবে)
+            else {
+                container.innerHTML = `
+                    <img src="${data.url}" style="width: 100%; height: 100%; object-fit: contain;" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <video src="${data.url}" autoplay loop muted playsinline 
+                           style="width: 100%; height: 100%; object-fit: contain; display: none;"></video>
+                `;
             }
 
         } else {
