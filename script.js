@@ -1,4 +1,4 @@
-// আপনার লোকাল আইপি অথবা HidenCloud-এর সার্ভার লিংক এখানে বসাবেন
+// লোকাল টেস্টের সময় লোকাল আইপি এবং HidenCloud এ আপলোড করলে সেখানে লাইভ সার্ভার লিংক বসাবেন
 const BACKEND_URL = "http://192.168.0.100:5000"; 
 
 async function uploadFile() {
@@ -13,7 +13,7 @@ async function uploadFile() {
     const formData = new FormData();
     formData.append("file", fileInput.files[0]);
 
-    status.innerText = "আপলোড হচ্ছে... একটু অপেক্ষা করুন।";
+    status.innerText = "আপলোড হচ্ছে... অপেক্ষা করুন।";
 
     try {
         let response = await fetch(`${BACKEND_URL}/upload`, {
@@ -23,12 +23,12 @@ async function uploadFile() {
         let data = await response.json();
         
         if(data.success) {
-            status.innerHTML = `সফল! ফাইল আইডি কপি করে রাখুন: <br><input type="text" value="${data.file_id}" readonly>`;
+            status.innerHTML = `সফল! ফাইল আইডি কপি করে রাখুন: <br><input type="text" value="${data.file_id}" readonly style="background:#0f172a; color:#38bdf8; text-align:center;">`;
         } else {
-            status.innerText = "আপলোড ব্যর্থ হয়েছে: " + (data.error || "অজানা সমস্যা");
+            status.innerText = "আপলোড ব্যর্থ হয়েছে!";
         }
     } catch (error) {
-        status.innerText = "সার্ভার কানেকশন এরর! পাইথন সার্ভার কি অন আছে?";
+        status.innerText = "সার্ভার কানেকশন এরর!";
         console.error(error);
     }
 }
@@ -38,11 +38,11 @@ async function viewFile() {
     const displayArea = document.getElementById('displayArea');
 
     if (!fileId) {
-        alert("দয়া করে সঠিক ফাইল আইডি দিন!");
+        alert("দয়া করে ফাইল আইডি দিন!");
         return;
     }
 
-    displayArea.innerHTML = "ফাইল লোড হচ্ছে...";
+    displayArea.innerHTML = "লোড হচ্ছে...";
 
     try {
         let response = await fetch(`${BACKEND_URL}/get-file?file_id=${encodeURIComponent(fileId)}`);
@@ -52,13 +52,42 @@ async function viewFile() {
             if (data.type === 'photo') {
                 displayArea.innerHTML = `<img src="${data.url}" alt="Telegram Image">`;
             } else {
-                displayArea.innerHTML = `<video src="${data.url}" controls autoplay></video>`;
+                displayArea.innerHTML = `<video src="${data.url}" controls autoplay loop></video>`;
             }
         } else {
-            displayArea.innerHTML = "ফাইল পাওয়া যায়নি বা আইডি ভুল!";
+            displayArea.innerHTML = "ফাইল পাওয়া যায়নি!";
         }
     } catch (error) {
         displayArea.innerHTML = "সার্ভার কানেকশন এরর!";
+    }
+}
+
+async function viewEmoji() {
+    const emojiId = document.getElementById('emojiIdInput').value.trim();
+    const emojiDisplay = document.getElementById('emojiDisplay');
+
+    if (!emojiId) {
+        alert("দয়া করে ইমোজি আইডি দিন!");
+        return;
+    }
+
+    emojiDisplay.innerHTML = "ইমোজি লোড হচ্ছে...";
+
+    try {
+        let response = await fetch(`${BACKEND_URL}/get-emoji?emoji_id=${encodeURIComponent(emojiId)}`);
+        let data = await response.json();
+
+        if (data.success) {
+            if (data.path.endsWith('.webm') || data.path.endsWith('.mp4')) {
+                emojiDisplay.innerHTML = `<video src="${data.url}" autoplay loop muted style="width: 100px; height: 100px; border-radius: 8px; background: #0f172a;"></video>`;
+            } else {
+                emojiDisplay.innerHTML = `<div style="text-align: center;"><p style="color: #4ade80; margin-bottom:5px;">সফলভাবে লোড হয়েছে!</p><a href="${data.url}" target="_blank" style="color: #38bdf8;">ফাইল ডাউনলোড / ওপেন করুন</a></div>`;
+            }
+        } else {
+            emojiDisplay.innerHTML = "ইমোজি পাওয়া যায়নি!";
+        }
+    } catch (error) {
+        emojiDisplay.innerHTML = "সার্ভার কানেকশন এরর!";
         console.error(error);
     }
 }
