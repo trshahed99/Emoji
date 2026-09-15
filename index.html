@@ -3,30 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Cloud Storage</title>
+    <title>Telegram Cloud & Emoji Storage</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
-        <h2>ফাইল আপলোড ও ভিউ সিস্টেম</h2>
+        <h2>টেলিগ্রাম ক্লাউড ও ইমোজি সিস্টেম</h2>
         
-        <!-- আপলোড সেকশন -->
-        <div class="upload-box">
+        <!-- ফাইল আপলোড সেকশন -->
+        <div class="section">
+            <h3>ফাইল আপলোড</h3>
             <input type="file" id="fileInput">
             <button onclick="uploadFile()">আপলোড করুন</button>
             <p id="uploadStatus"></p>
         </div>
 
-        <hr>
+        <hr style="border-color: #334155; margin: 20px 0;">
 
         <!-- ফাইল দেখার সেকশন -->
-        <div class="view-box">
+        <div class="section">
+            <h3>ফাইল বা ছবি দেখুন</h3>
             <input type="text" id="fileIdInput" placeholder="ফাইল আইডি লিখুন (যেমন: AgACAg...)">
             <button onclick="viewFile()">ফাইল দেখুন</button>
+            <div id="displayArea"></div>
         </div>
 
-        <div id="displayArea"></div>
+        <hr style="border-color: #334155; margin: 20px 0;">
+
+        <!-- অ্যানিমেটেড ইমোজি দেখার সেকশন -->
+        <div class="section">
+            <h3>টেলিগ্রাম কাস্টম ইমোজি প্রিভিউ</h3>
+            <input type="text" id="emojiIdInput" placeholder="ইমোজি আইডি লিখুন (document_id)">
+            <button onclick="viewEmoji()">ইমোজি দেখুন</button>
+            <div id="emojiDisplay"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>
