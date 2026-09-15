@@ -37,7 +37,7 @@ async function uploadFile() {
 }
 
 // ==========================================
-// ২. ফাইল বা ছবি দেখার ফাংশন (Restored & Fixed)
+// ২. ফাইল বা ছবি দেখার ফাংশন
 // ==========================================
 async function viewFile() {
     const fileId = document.getElementById('fileIdInput').value.trim();
@@ -56,12 +56,12 @@ async function viewFile() {
 
         if (data.url) {
             if (data.type === 'photo') {
-                // ছবি হলে সরাসরি ইমেজ ট্যাগে দেখাবে
                 displayArea.innerHTML = `<img src="${data.url}" alt="Telegram Image" style="max-width: 100%; margin-top: 15px; border-radius: 6px;">`;
             } else {
-                // ভিডিও হলে CORS এরর এড়াতে Blob হিসেবে ডাউনলোড করে দেখাবে
+                // ভিডিও হলে CORS এড়ানোর জন্য Proxy ব্যবহার করে Blob ডাউনলোড করা হচ্ছে
                 try {
-                    const videoBlob = await fetch(data.url).then(res => res.blob());
+                    const proxyUrl = `${BACKEND_URL}/proxy?url=${encodeURIComponent(data.url)}`;
+                    const videoBlob = await fetch(proxyUrl).then(res => res.blob());
                     const videoUrl = URL.createObjectURL(videoBlob);
                     
                     displayArea.innerHTML = `
@@ -74,8 +74,7 @@ async function viewFile() {
                         </video>
                     `;
                 } catch (err) {
-                    // কোনো কারণে ব্লব ফেইল করলে ডিরেক্ট লিংক ট্রাই করবে
-                    displayArea.innerHTML = `<video src="${data.url}" controls autoplay loop style="max-width: 100%; margin-top: 15px; border-radius: 6px;"></video>`;
+                    displayArea.innerHTML = `<span style='color: #ef4444;'>ভিডিও লোড হয়নি!</span>`;
                 }
             }
         } else {
@@ -110,14 +109,16 @@ async function viewEmoji() {
             const container = document.getElementById('emojiContainer');
             const filePath = data.path ? data.path.toLowerCase() : '';
 
-            // ব্যাকএন্ড থেকে পাওয়া ফ্ল্যাগ অথবা ফাইল এক্সটেনশন দিয়ে টাইপ চেক
             const isVideo = data.is_video || filePath.endsWith('.webm') || filePath.endsWith('.mp4');
             const isAnimated = data.is_animated || filePath.endsWith('.tgs');
 
-            // ১. TGS অ্যানিমেটেড ইমোজি (pako দিয়ে Unzip করে Lottie তে রেন্ডার)
+            // ১. TGS অ্যানিমেটেড ইমোজি
             if (isAnimated) {
                 try {
-                    const arrayBuffer = await fetch(data.url).then(res => res.arrayBuffer());
+                    // Proxy এর মাধ্যমে TGS ফাইলটি আনছি
+                    const proxyUrl = `${BACKEND_URL}/proxy?url=${encodeURIComponent(data.url)}`;
+                    const arrayBuffer = await fetch(proxyUrl).then(res => res.arrayBuffer());
+                    
                     const decompressedData = pako.ungzip(new Uint8Array(arrayBuffer), { to: 'string' });
                     const animData = JSON.parse(decompressedData);
                     
@@ -136,15 +137,16 @@ async function viewEmoji() {
             // ২. ভিডিও ইমোজি (.webm / .mp4)
             else if (isVideo) {
                 try {
-                    // টেলিগ্রামের ভিডিও লিংক সরাসরি কাজ না করার কারণে Blob হিসেবে ডাউনলোড করা হচ্ছে
-                    const videoBlob = await fetch(data.url).then(res => res.blob());
+                    // Proxy এর মাধ্যমে ভিডিও ফাইলটি আনছি
+                    const proxyUrl = `${BACKEND_URL}/proxy?url=${encodeURIComponent(data.url)}`;
+                    const videoBlob = await fetch(proxyUrl).then(res => res.blob());
                     const videoUrl = URL.createObjectURL(videoBlob);
                     
                     const videoElement = document.createElement('video');
                     videoElement.src = videoUrl;
                     videoElement.autoplay = true;
                     videoElement.loop = true;
-                    videoElement.muted = true; // অটোপ্লে এর জন্য muted থাকা বাধ্যতামূলক
+                    videoElement.muted = true; 
                     videoElement.playsInline = true;
                     videoElement.style.width = '100%';
                     videoElement.style.height = '100%';
@@ -157,7 +159,7 @@ async function viewEmoji() {
                     container.innerHTML = `<span style="color: #ef4444; font-size: 12px;">ভিডিও লোড হয়নি</span>`;
                 }
             } 
-            // ৩. স্ট্যাটিক ইমোজি (.webp / .png)
+            // ৩. স্ট্যাটিক ইমোজি (.webp / .png) - এগুলোতে Proxy লাগে না, সরাসরি লোড হয়
             else {
                 container.innerHTML = `<img src="${data.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
             }
