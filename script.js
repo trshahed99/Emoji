@@ -78,21 +78,32 @@ async function viewEmoji() {
         let data = await response.json();
 
         if (data.success) {
-            // টেলিগ্রামের কাস্টম ইমোজি সরাসরি অটো-প্লে এবং লুপ হবে, কোনো কন্ট্রোল বা ডাউনলোড অপশন থাকবে না
-            emojiDisplay.innerHTML = `
-                <video src="${data.url}" 
-                       autoplay 
-                       loop 
-                       muted 
-                       playsinline 
-                       style="width: 80px; height: 80px; background: transparent; border: none;">
-                </video>
-            `;
+            // যদি ফাইলটি .tgs বা অন্য ফরম্যাটের হয়, তবে ব্রাউজারে দেখানোর জন্য ভিডিও অথবা ইমেজ ট্যাগ সঠিকভাবে সেট করা
+            if (data.path.endsWith('.tgs')) {
+                // TGS ফাইল হলে সরাসরি লিংক বা প্লেয়ারের ব্যবস্থা
+                emojiDisplay.innerHTML = `
+                    <div style="background: #0f172a; padding: 10px; border-radius: 8px;">
+                        <p style="color: #38bdf8; font-size: 14px; margin-bottom: 5px;">TGS অ্যানিমেশন ফাইল:</p>
+                        <a href="${data.url}" target="_blank" style="color: #4ade80; text-decoration: none; font-weight: bold;">📥 ফাইল ডাউনলোড করুন</a>
+                    </div>
+                `;
+            } else {
+                // WebM বা ভিডিও ফরম্যাট হলে অটো-প্লে হবে
+                emojiDisplay.innerHTML = `
+                    <video src="${data.url}" 
+                           autoplay 
+                           loop 
+                           muted 
+                           playsinline 
+                           style="width: 80px; height: 80px; background: transparent; border: none; object-fit: contain;">
+                    </video>
+                `;
+            }
         } else {
-            emojiDisplay.innerHTML = "ইমোজি পাওয়া যায়নি!";
+            emojiDisplay.innerHTML = "<span style='color: #ef4444;'>ইমোজি পাওয়া যায়নি!</span>";
         }
     } catch (error) {
-        emojiDisplay.innerHTML = "সার্ভার কানেকশন এরর!";
+        emojiDisplay.innerHTML = "<span style='color: #ef4444;'>সার্ভার কানেকশন এরর!</span>";
         console.error(error);
     }
 }
