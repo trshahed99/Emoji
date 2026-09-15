@@ -1,12 +1,15 @@
-// লোকাল টেস্টের সময় লোকাল আইপি এবং HidenCloud এ আপলোড করলে সেখানে লাইভ সার্ভার লিংক বসাবেন
+// লোকাল টেস্টের সময় লোকাল আইপি এবং HidenCloud এ আপলোড করলে সেখানে লাইভ সার্ভার লিংক বসাবেন
 const BACKEND_URL = "http://192.168.0.100:5000"; 
 
+// ==========================================
+// ১. ফাইল আপলোড ফাংশন
+// ==========================================
 async function uploadFile() {
     const fileInput = document.getElementById('fileInput');
     const status = document.getElementById('uploadStatus');
 
     if (fileInput.files.length === 0) {
-        alert("দয়া করে একটি ফাইল সিলেক্ট করুন!");
+        alert("দয়া করে একটি ফাইল সিলেক্ট করুন!");
         return;
     }
 
@@ -25,7 +28,7 @@ async function uploadFile() {
         if(data.success) {
             status.innerHTML = `সফল! ফাইল আইডি কপি করে রাখুন: <br><input type="text" value="${data.file_id}" readonly style="background:#0f172a; color:#38bdf8; text-align:center;">`;
         } else {
-            status.innerText = "আপলোড ব্যর্থ হয়েছে!";
+            status.innerText = "আপলোড ব্যর্থ হয়েছে!";
         }
     } catch (error) {
         status.innerText = "সার্ভার কানেকশন এরর!";
@@ -33,12 +36,15 @@ async function uploadFile() {
     }
 }
 
+// ==========================================
+// ২. ফাইল বা ছবি দেখার ফাংশন (Restored & Fixed)
+// ==========================================
 async function viewFile() {
     const fileId = document.getElementById('fileIdInput').value.trim();
     const displayArea = document.getElementById('displayArea');
 
     if (!fileId) {
-        alert("দয়া করে ফাইল আইডি দিন!");
+        alert("দয়া করে ফাইল আইডি দিন!");
         return;
     }
 
@@ -50,18 +56,40 @@ async function viewFile() {
 
         if (data.url) {
             if (data.type === 'photo') {
-                displayArea.innerHTML = `<img src="${data.url}" alt="Telegram Image">`;
+                // ছবি হলে সরাসরি ইমেজ ট্যাগে দেখাবে
+                displayArea.innerHTML = `<img src="${data.url}" alt="Telegram Image" style="max-width: 100%; margin-top: 15px; border-radius: 6px;">`;
             } else {
-                displayArea.innerHTML = `<video src="${data.url}" controls autoplay loop></video>`;
+                // ভিডিও হলে CORS এরর এড়াতে Blob হিসেবে ডাউনলোড করে দেখাবে
+                try {
+                    const videoBlob = await fetch(data.url).then(res => res.blob());
+                    const videoUrl = URL.createObjectURL(videoBlob);
+                    
+                    displayArea.innerHTML = `
+                        <video src="${videoUrl}" 
+                               controls 
+                               autoplay 
+                               loop 
+                               playsinline 
+                               style="max-width: 100%; margin-top: 15px; border-radius: 6px;">
+                        </video>
+                    `;
+                } catch (err) {
+                    // কোনো কারণে ব্লব ফেইল করলে ডিরেক্ট লিংক ট্রাই করবে
+                    displayArea.innerHTML = `<video src="${data.url}" controls autoplay loop style="max-width: 100%; margin-top: 15px; border-radius: 6px;"></video>`;
+                }
             }
         } else {
-            displayArea.innerHTML = "ফাইল পাওয়া যায়নি!";
+            displayArea.innerHTML = "<span style='color: #ef4444;'>ফাইল পাওয়া যায়নি!</span>";
         }
     } catch (error) {
-        displayArea.innerHTML = "সার্ভার কানেকশন এরর!";
+        displayArea.innerHTML = "<span style='color: #ef4444;'>সার্ভার কানেকশন এরর!</span>";
+        console.error(error);
     }
 }
 
+// ==========================================
+// ৩. ইমোজি দেখার ফাংশন (TGS, Video, Image)
+// ==========================================
 async function viewEmoji() {
     const emojiId = document.getElementById('emojiIdInput').value.trim();
     const emojiDisplay = document.getElementById('emojiDisplay');
@@ -86,7 +114,7 @@ async function viewEmoji() {
             const isVideo = data.is_video || filePath.endsWith('.webm') || filePath.endsWith('.mp4');
             const isAnimated = data.is_animated || filePath.endsWith('.tgs');
 
-            // ১. TGS অ্যানিমেটেড ইমোজি
+            // ১. TGS অ্যানিমেটেড ইমোজি (pako দিয়ে Unzip করে Lottie তে রেন্ডার)
             if (isAnimated) {
                 try {
                     const arrayBuffer = await fetch(data.url).then(res => res.arrayBuffer());
