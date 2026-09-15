@@ -67,7 +67,7 @@ async function viewEmoji() {
     const emojiDisplay = document.getElementById('emojiDisplay');
 
     if (!emojiId) {
-        alert("দয়া করে ইমোজি আইডি দিন!");
+        alert("দয়া করে ইমোজি আইডি দিন!");
         return;
     }
 
@@ -78,22 +78,21 @@ async function viewEmoji() {
         let data = await response.json();
 
         if (data.success) {
-            // ডিসপ্লে কন্টেইনার তৈরি
             emojiDisplay.innerHTML = `<div id="emojiContainer" style="width: 100px; height: 100px; margin: 0 auto; display: flex; justify-content: center; align-items: center;"></div>`;
             const container = document.getElementById('emojiContainer');
-            const filePath = data.path.toLowerCase();
+            const filePath = data.path ? data.path.toLowerCase() : '';
 
-            // ১. TGS ফাইল (Telegram অ্যানিমেটেড ইমোজি)
-            if (filePath.endsWith('.tgs')) {
+            // ব্যাকএন্ড থেকে পাওয়া ফ্ল্যাগ অথবা ফাইল এক্সটেনশন দিয়ে টাইপ চেক
+            const isVideo = data.is_video || filePath.endsWith('.webm') || filePath.endsWith('.mp4');
+            const isAnimated = data.is_animated || filePath.endsWith('.tgs');
+
+            // ১. TGS অ্যানিমেটেড ইমোজি
+            if (isAnimated) {
                 try {
-                    // TGS ফাইল ডাউনলোড করে ArrayBuffer হিসেবে নেওয়া
                     const arrayBuffer = await fetch(data.url).then(res => res.arrayBuffer());
-                    
-                    // pako দিয়ে GZIP ডিকম্প্রেস করা
                     const decompressedData = pako.ungzip(new Uint8Array(arrayBuffer), { to: 'string' });
                     const animData = JSON.parse(decompressedData);
                     
-                    // Lottie দিয়ে রেন্ডার করা
                     lottie.loadAnimation({
                         container: container,
                         renderer: 'svg',
@@ -103,52 +102,40 @@ async function viewEmoji() {
                     });
                 } catch (e) {
                     console.error("TGS লোড এরর:", e);
-                    container.innerHTML = `<span style="color: #ef4444; font-size: 12px; text-align: center;">অ্যানিমেশন লোড হয়নি</span>`;
+                    container.innerHTML = `<span style="color: #ef4444; font-size: 12px; text-align: center;">অ্যানিমেশন লোড হয়নি</span>`;
                 }
             } 
-            // ২. সাধারণ Lottie JSON ফাইল
-            else if (filePath.endsWith('.json')) {
+            // ২. ভিডিও ইমোজি (.webm / .mp4)
+            else if (isVideo) {
                 try {
-                    const animData = await fetch(data.url).then(res => res.json());
-                    lottie.loadAnimation({
-                        container: container,
-                        renderer: 'svg',
-                        loop: true,
-                        autoplay: true,
-                        animationData: animData
-                    });
+                    // টেলিগ্রামের ভিডিও লিংক সরাসরি কাজ না করার কারণে Blob হিসেবে ডাউনলোড করা হচ্ছে
+                    const videoBlob = await fetch(data.url).then(res => res.blob());
+                    const videoUrl = URL.createObjectURL(videoBlob);
+                    
+                    const videoElement = document.createElement('video');
+                    videoElement.src = videoUrl;
+                    videoElement.autoplay = true;
+                    videoElement.loop = true;
+                    videoElement.muted = true; // অটোপ্লে এর জন্য muted থাকা বাধ্যতামূলক
+                    videoElement.playsInline = true;
+                    videoElement.style.width = '100%';
+                    videoElement.style.height = '100%';
+                    videoElement.style.objectFit = 'contain';
+                    videoElement.style.background = 'transparent';
+                    
+                    container.appendChild(videoElement);
                 } catch (e) {
-                    container.innerHTML = `<span style="color: #ef4444; font-size: 12px;">JSON লোড এরর!</span>`;
+                    console.error("ভিডিও লোড এরর:", e);
+                    container.innerHTML = `<span style="color: #ef4444; font-size: 12px;">ভিডিও লোড হয়নি</span>`;
                 }
-            }
-            // ৩. ভিডিও ফরম্যাট (.webm বা .mp4)
-            else if (filePath.endsWith('.webm') || filePath.endsWith('.mp4')) {
-                container.innerHTML = `
-                    <video src="${data.url}" 
-                           autoplay 
-                           loop 
-                           muted 
-                           playsinline 
-                           style="width: 100%; height: 100%; object-fit: contain; background: transparent;">
-                    </video>
-                `;
             } 
-            // ৪. ইমেজ ফরম্যাট (.webp, .png, .jpg, .gif)
-            else if (filePath.endsWith('.webp') || filePath.endsWith('.png') || filePath.endsWith('.jpg') || filePath.endsWith('.jpeg') || filePath.endsWith('.gif')) {
-                container.innerHTML = `<img src="${data.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
-            } 
-            // ৫. অজানা ফরম্যাট (Fallback: আগে ইমেজ হিসেবে ট্রাই করবে, না হলে ভিডিও হিসেবে)
+            // ৩. স্ট্যাটিক ইমোজি (.webp / .png)
             else {
-                container.innerHTML = `
-                    <img src="${data.url}" style="width: 100%; height: 100%; object-fit: contain;" 
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <video src="${data.url}" autoplay loop muted playsinline 
-                           style="width: 100%; height: 100%; object-fit: contain; display: none;"></video>
-                `;
+                container.innerHTML = `<img src="${data.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
             }
 
         } else {
-            emojiDisplay.innerHTML = "<span style='color: #ef4444;'>ইমোজি পাওয়া যায়নি!</span>";
+            emojiDisplay.innerHTML = "<span style='color: #ef4444;'>ইমোজি পাওয়া যায়নি!</span>";
         }
     } catch (error) {
         emojiDisplay.innerHTML = "<span style='color: #ef4444;'>সার্ভার কানেকশন এরর!</span>";
