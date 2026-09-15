@@ -1,1 +1,34 @@
-<img src="kHa5E.jpg" alt="My Image">
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Cloud Storage</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>ফাইল আপলোড ও ভিউ সিস্টেম</h2>
+        
+        <!-- আপলোড সেকশন -->
+        <div class="upload-box">
+            <input type="file" id="fileInput">
+            <button onclick="uploadFile()">আপলোড করুন</button>
+            <p id="uploadStatus"></p>
+        </div>
+
+        <hr>
+
+        <!-- ফাইল দেখার সেকশন -->
+        <div class="view-box">
+            <input type="text" id="fileIdInput" placeholder="ফাইল আইডি লিখুন (যেমন: AgACAg...)">
+            <button onclick="viewFile()">ফাইল দেখুন</button>
+        </div>
+
+        <div id="displayArea"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
