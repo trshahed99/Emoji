@@ -78,27 +78,44 @@ async function viewEmoji() {
         let data = await response.json();
 
         if (data.success) {
-            // যদি ফাইলটি .tgs বা অন্য ফরম্যাটের হয়, তবে ব্রাউজারে দেখানোর জন্য ভিডিও অথবা ইমেজ ট্যাগ সঠিকভাবে সেট করা
-            if (data.path.endsWith('.tgs')) {
-                // TGS ফাইল হলে সরাসরি লিংক বা প্লেয়ারের ব্যবস্থা
-                emojiDisplay.innerHTML = `
-                    <div style="background: #0f172a; padding: 10px; border-radius: 8px;">
-                        <p style="color: #38bdf8; font-size: 14px; margin-bottom: 5px;">TGS অ্যানিমেশন ফাইল:</p>
-                        <a href="${data.url}" target="_blank" style="color: #4ade80; text-decoration: none; font-weight: bold;">📥 ফাইল ডাউনলোড করুন</a>
-                    </div>
-                `;
-            } else {
-                // WebM বা ভিডিও ফরম্যাট হলে অটো-প্লে হবে
-                emojiDisplay.innerHTML = `
+            // ডিসপ্লে এরিয়া ক্লিয়ার করে নতুন কন্টেইনার বানানো
+            emojiDisplay.innerHTML = `<div id="lottieContainer" style="width: 90px; height: 90px; margin: 0 auto; display: flex; justify-content: center; align-items: center;"></div>`;
+            const container = document.getElementById('lottieContainer');
+
+            if (data.path.endsWith('.tgs') || data.path.endsWith('.json')) {
+                // যদি টেলিগ্রামের TGS অ্যানিমেশন ফাইল হয়, তবে Lottie দিয়ে রেন্ডার করবে
+                // (যেহেতু টেলিগ্রামের tgs ফাইল কমপ্রেসড থাকে, সরাসরি জেসন লিংকের জন্য ব্রাউজার ফেচ করে লোড করবে)
+                try {
+                    let animData = await fetch(data.url).then(res => res.json());
+                    lottie.loadAnimation({
+                        container: container,
+                        renderer: 'svg',
+                        loop: true,
+                        autoplay: true,
+                        animationData: animData
+                    });
+                } catch (e) {
+                    // কোনো কারণে ফেচ না হলে ডিরেক্ট লিংক ভিডিও বা ইমেজ হিসেবে দেখানোর ফলব্যাক
+                    container.innerHTML = `<img src="${data.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
+                }
+            } 
+            else if (data.path.endsWith('.webm') || data.path.endsWith('.mp4')) {
+                // ভিডিও ফরম্যাট হলে অটো-প্লে হবে
+                container.innerHTML = `
                     <video src="${data.url}" 
                            autoplay 
                            loop 
                            muted 
                            playsinline 
-                           style="width: 80px; height: 80px; background: transparent; border: none; object-fit: contain;">
+                           style="width: 100%; height: 100%; object-fit: contain; background: transparent;">
                     </video>
                 `;
+            } 
+            else {
+                // সাধারণ ছবি হলে
+                container.innerHTML = `<img src="${data.url}" style="width: 100%; height: 100%; object-fit: contain;">`;
             }
+
         } else {
             emojiDisplay.innerHTML = "<span style='color: #ef4444;'>ইমোজি পাওয়া যায়নি!</span>";
         }
