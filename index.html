@@ -1,51 +1,73 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Telegram Cloud & Emoji Storage</title>
-    <link rel="stylesheet" href="style.css">
-
-    <!-- pako লাইব্রেরি (TGS ফাইল Unzip করার জন্য অত্যন্ত জরুরি) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
-
-    <!-- Lottie Animation Player Script (TGS ফাইল রেন্ডার করার জন্য) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeonPy Runner</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/editor/editor.main.min.css">
 </head>
 <body>
 
-    <div class="container">
-        <h2>টেলিগ্রাম ক্লাউড ও ইমোজি সিস্টেম</h2>
-        
-        <!-- ফাইল আপলোড সেকশন -->
-        <div class="section">
-            <h3>ফাইল আপলোড</h3>
-            <input type="file" id="fileInput">
-            <button onclick="uploadFile()">আপলোড করুন</button>
-            <p id="uploadStatus"></p>
-        </div>
+<!-- Neon background grid -->
+<div class="grid-bg"></div>
 
-        <hr style="border-color: #334155; margin: 20px 0;">
+<header class="neon-header">
+  <h1 class="neon-title">⚡ NeonPy Runner</h1>
+  <p class="neon-sub">Upload → Edit → Run Python. No signup. No limits.</p>
+</header>
 
-        <!-- ফাইল দেখার সেকশন -->
-        <div class="section">
-            <h3>ফাইল বা ছবি দেখুন</h3>
-            <input type="text" id="fileIdInput" placeholder="ফাইল আইডি লিখুন (যেমন: AgACAg...)">
-            <button onclick="viewFile()">ফাইল দেখুন</button>
-            <div id="displayArea"></div>
-        </div>
+<main class="container">
 
-        <hr style="border-color: #334155; margin: 20px 0;">
-
-        <!-- অ্যানিমেটেড ইমোজি দেখার সেকশন -->
-        <div class="section">
-            <h3>টেলিগ্রাম কাস্টম ইমোজি প্রিভিউ</h3>
-            <input type="text" id="emojiIdInput" placeholder="ইমোজি আইডি লিখুন (document_id)">
-            <button onclick="viewEmoji()">ইমোজি দেখুন</button>
-            <div id="emojiDisplay"></div>
-        </div>
+  <!-- Upload Zone -->
+  <section class="panel">
+    <h2 class="panel-title">📦 Upload</h2>
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="zipInput" accept=".zip" hidden>
+      <input type="file" id="folderInput" webkitdirectory multiple hidden>
+      <p>Drag & Drop <span class="neon-text">ZIP</span> or <span class="neon-text">Folder</span></p>
+      <div class="btn-row">
+        <button class="neon-btn" onclick="document.getElementById('zipInput').click()">📁 ZIP</button>
+        <button class="neon-btn" onclick="document.getElementById('folderInput').click()">📂 Folder</button>
+      </div>
     </div>
+  </section>
 
-    <script src="script.js"></script>
+  <!-- File Explorer -->
+  <section class="panel">
+    <h2 class="panel-title">🗂 Files</h2>
+    <ul id="fileList" class="file-list">
+      <li class="empty">No files uploaded yet</li>
+    </ul>
+  </section>
+
+  <!-- Editor -->
+  <section class="panel editor-panel">
+    <h2 class="panel-title">✏️ Editor</h2>
+    <div id="editor" class="editor"></div>
+    <div class="btn-row">
+      <button class="neon-btn" id="saveBtn">💾 Save</button>
+      <button class="neon-btn" id="runBtn">▶️ Run</button>
+      <button class="neon-btn danger" id="deleteBtn">🗑 Delete</button>
+    </div>
+  </section>
+
+  <!-- Requirements -->
+  <section class="panel">
+    <h2 class="panel-title">📜 requirements.txt</h2>
+    <textarea id="reqInput" class="neon-textarea" placeholder="fastapi&#10;requests&#10;python-telegram-bot"></textarea>
+  </section>
+
+  <!-- Console -->
+  <section class="panel">
+    <h2 class="panel-title">🖥 Console</h2>
+    <pre id="console" class="console">> Waiting for input...</pre>
+  </section>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
