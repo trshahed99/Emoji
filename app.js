@@ -1,14 +1,14 @@
 // ============================================================
-//  STATE
+//  NeonPy Runner — Frontend
+//  All API calls are relative → Cloudflare Worker forwards
 // ============================================================
+
 let editor = null;
 let currentProject = null;
 let currentFile = null;
-let filesCache = {}; // for deploy
+let filesCache = {};
 
-// ============================================================
-//  MONACO EDITOR
-// ============================================================
+// ---------- Monaco Editor ----------
 require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' } });
 require(['vs/editor/editor.main'], function () {
   monaco.editor.defineTheme('neon', {
@@ -38,9 +38,7 @@ require(['vs/editor/editor.main'], function () {
   });
 });
 
-// ============================================================
-//  UPLOAD HANDLERS
-// ============================================================
+// ---------- Upload ----------
 const uploadZone = document.getElementById('uploadZone');
 const zipInput = document.getElementById('zipInput');
 const folderInput = document.getElementById('folderInput');
@@ -94,9 +92,7 @@ function updateStatusAndMainFiles() {
   });
 }
 
-// ============================================================
-//  DEPLOY
-// ============================================================
+// ---------- Deploy ----------
 document.getElementById('deployBtn').onclick = async () => {
   const name = document.getElementById('projectName').value.trim();
   if (!name) return alert('Enter a project name');
@@ -118,7 +114,7 @@ document.getElementById('deployBtn').onclick = async () => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Deploy failed');
 
-    alert(`✅ ${name} deployed!\nPort: ${data.port}\nPID: ${data.pid}`);
+    alert(`✅ ${name} deployed!\nURL: ${data.url}\nPort: ${data.port}\nPID: ${data.pid}`);
     filesCache = {};
     uploadStatus.textContent = '';
     document.getElementById('projectName').value = '';
@@ -133,9 +129,7 @@ document.getElementById('deployBtn').onclick = async () => {
   }
 };
 
-// ============================================================
-//  PROJECT LIST
-// ============================================================
+// ---------- Project List ----------
 async function loadProjects() {
   const res = await fetch('/api/projects');
   const data = await res.json();
@@ -172,9 +166,7 @@ async function loadProjects() {
   });
 }
 
-// ============================================================
-//  WORKSPACE
-// ============================================================
+// ---------- Workspace ----------
 async function openProject(name) {
   currentProject = name;
   document.getElementById('workspace').style.display = 'block';
@@ -182,9 +174,8 @@ async function openProject(name) {
 
   const res = await fetch(`/api/project/${name}`);
   const data = await res.json();
-  if (!res.ok) return alert('Failed to load project');
+  if (!res.ok) return alert('Failed to load');
 
-  // File tree
   const tree = document.getElementById('fileTree');
   tree.innerHTML = '';
   data.files.forEach(f => {
@@ -210,19 +201,17 @@ async function loadFile(name, path) {
   const res = await fetch(`/api/project/${name}/file?path=${encodeURIComponent(path)}`);
   const data = await res.json();
   if (!res.ok) {
-    editor.setValue(`// ${data.detail || 'Cannot load file'}`);
+    editor.setValue(`# ${data.detail || 'Cannot load'}`);
     return;
   }
-
   editor.setValue(data.content);
   const ext = path.split('.').pop();
-  const langMap = { py: 'python', js: 'javascript', html: 'html', css: 'css', json: 'json', txt: 'plaintext', md: 'markdown', env: 'plaintext' };
+  const langMap = { py: 'python', js: 'javascript', html: 'html', css: 'css',
+                    json: 'json', txt: 'plaintext', md: 'markdown', env: 'plaintext' };
   monaco.editor.setModelLanguage(editor.getModel(), langMap[ext] || 'plaintext');
 }
 
-// ============================================================
-//  SAVE FILE
-// ============================================================
+// ---------- Save ----------
 document.getElementById('saveBtn').onclick = async () => {
   if (!currentProject || !currentFile) return alert('No file selected');
   const content = editor.getValue();
@@ -240,11 +229,7 @@ document.getElementById('saveBtn').onclick = async () => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.detail || 'Save failed');
 
-    if (data.restarted) {
-      alert(`✅ Saved & restarted on port ${data.port}`);
-    } else {
-      alert('✅ Saved (project not running)');
-    }
+    alert(data.restarted ? `✅ Saved & restarted on port ${data.port}` : '✅ Saved');
     loadProjects();
     refreshLogs();
   } catch (err) {
@@ -255,9 +240,7 @@ document.getElementById('saveBtn').onclick = async () => {
   }
 };
 
-// ============================================================
-//  DELETE FILE
-// ============================================================
+// ---------- Delete File ----------
 document.getElementById('deleteFileBtn').onclick = async () => {
   if (!currentProject || !currentFile) return alert('No file selected');
   if (!confirm(`Delete ${currentFile}?`)) return;
@@ -269,7 +252,6 @@ document.getElementById('deleteFileBtn').onclick = async () => {
   });
   const data = await res.json();
   if (!res.ok) return alert(data.detail || 'Delete failed');
-
   alert('🗑 Deleted');
   currentFile = null;
   editor.setValue('');
@@ -277,9 +259,7 @@ document.getElementById('deleteFileBtn').onclick = async () => {
   openProject(currentProject);
 };
 
-// ============================================================
-//  PROJECT CONTROLS
-// ============================================================
+// ---------- Controls ----------
 document.getElementById('wsStart').onclick = async () => {
   const res = await fetch(`/api/project/${currentProject}/start`, { method: 'POST' });
   const data = await res.json();
@@ -304,7 +284,7 @@ document.getElementById('wsRestart').onclick = async () => {
 };
 
 document.getElementById('wsDelete').onclick = async () => {
-  if (!confirm(`Delete project ${currentProject} permanently?`)) return;
+  if (!confirm(`Delete ${currentProject}?`)) return;
   await fetch(`/api/project/${currentProject}`, { method: 'DELETE' });
   closeWorkspace();
   loadProjects();
@@ -319,15 +299,13 @@ function closeWorkspace() {
   editor.setValue('# Select a file from the tree 🗂\n');
 }
 
-// ============================================================
-//  LOGS
-// ============================================================
+// ---------- Logs ----------
 async function refreshLogs() {
   if (!currentProject) return;
   const res = await fetch(`/api/project/${currentProject}/logs?lines=200`);
   const data = await res.json();
   const consoleEl = document.getElementById('console');
-  consoleEl.textContent = data.logs || '(empty log)';
+  consoleEl.textContent = data.logs || '(empty)';
   consoleEl.scrollTop = consoleEl.scrollHeight;
 }
 
@@ -339,8 +317,5 @@ document.getElementById('clearLogs').onclick = async () => {
   refreshLogs();
 };
 
-// ============================================================
-//  INIT
-// ============================================================
 loadProjects();
 setInterval(() => { if (currentProject) refreshLogs(); }, 5000);
