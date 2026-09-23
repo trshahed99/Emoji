@@ -13,91 +13,94 @@
 
 <header class="neon-header">
   <h1 class="neon-title">⚡ NeonPy Runner</h1>
-  <p class="neon-sub">Upload · Edit · Run — No signup, no limits 😎</p>
+  <p class="neon-sub">Create · Edit · Run — No signup, no limits 😎</p>
 </header>
 
 <main class="container">
 
-  <section class="panel" id="uploadPanel">
-    <h2 class="panel-title">📦 Deploy New Bot</h2>
+  <!-- ============ CREATE PROJECT ============ -->
+  <section class="panel">
+    <h2 class="panel-title">🆕 New Project</h2>
 
     <div class="form-row">
-      <input type="text" id="projectName" class="neon-input" placeholder="project_name">
-      <select id="mainFileSelect" class="neon-input">
-        <option value="">Auto-detect main file</option>
-      </select>
-    </div>
-
-    <div class="upload-zone" id="uploadZone">
-      <input type="file" id="zipInput" accept=".zip" hidden>
-      <input type="file" id="folderInput" webkitdirectory multiple hidden>
-      <p>Drag & Drop <span class="neon-text">ZIP</span> or <span class="neon-text">Folder</span></p>
-      <div class="btn-row">
-        <button class="neon-btn" onclick="document.getElementById('zipInput').click()">📁 ZIP</button>
-        <button class="neon-btn" onclick="document.getElementById('folderInput').click()">📂 Folder</button>
-      </div>
-      <p id="uploadStatus" class="upload-status"></p>
-    </div>
-
-    <h3 class="sub-title">📜 requirements.txt</h3>
-    <textarea id="reqInput" class="neon-textarea" placeholder="fastapi&#10;requests&#10;python-telegram-bot"></textarea>
-
-    <div class="btn-row">
-      <button class="neon-btn big" id="deployBtn">🚀 Deploy</button>
+      <input type="text" id="newProjectName" class="neon-input" placeholder="project_name (letters, numbers, _ -)">
+      <button class="neon-btn big" id="createProjectBtn">➕ Create Project</button>
     </div>
   </section>
 
+  <!-- ============ PROJECT LIST ============ -->
   <section class="panel">
-    <h2 class="panel-title">🤖 My Bots</h2>
+    <h2 class="panel-title">🤖 My Projects</h2>
     <div id="projectList" class="project-list">
-      <p class="empty">No projects deployed yet.</p>
+      <p class="empty">No projects yet. Create one above 👆</p>
     </div>
   </section>
 
+  <!-- ============ WORKSPACE ============ -->
   <section class="panel workspace" id="workspace" style="display:none;">
+
     <div class="workspace-header">
       <h2 class="panel-title" id="wsTitle">📁 Project</h2>
       <div class="btn-row inline">
-        <button class="neon-btn small" id="wsStart">▶️ Start</button>
-        <button class="neon-btn small" id="wsStop">⏸ Stop</button>
+        <button class="neon-btn small" id="wsStart">▶️ Start All</button>
+        <button class="neon-btn small" id="wsStop">⏸ Stop All</button>
         <button class="neon-btn small" id="wsRestart">🔄 Restart</button>
-        <button class="neon-btn small danger" id="wsDelete">🗑 Delete</button>
+        <button class="neon-btn small danger" id="wsDelete">🗑 Delete Project</button>
         <button class="neon-btn small" id="wsClose">✖ Close</button>
       </div>
     </div>
 
+    <!-- STARTUP COMMANDS -->
+    <div class="startup-section">
+      <h3 class="sub-title">🚀 Startup Commands <span class="hint">(এক container এ একাধিক ফাইল run করার জন্য — প্রতিটা লাইনে একটা command)</span></h3>
+      <textarea id="startupCommands" class="neon-textarea startup-box" placeholder="main.py&#10;bot.py&#10;worker.py"></textarea>
+      <div class="btn-row inline">
+        <button class="neon-btn small" id="saveStartupBtn">💾 Save Startup Commands</button>
+      </div>
+    </div>
+
     <div class="workspace-grid">
+
+      <!-- FILE TREE -->
       <aside class="file-tree">
-        <div class="tree-header">🗂 Files</div>
+        <div class="tree-header">
+          🗂 Files
+          <button class="neon-btn tiny" id="newFileBtn" title="New file">➕</button>
+        </div>
         <ul id="fileTree"></ul>
       </aside>
 
+      <!-- EDITOR -->
       <div class="editor-wrap">
         <div class="editor-toolbar">
-          <span id="currentFile">—</span>
+          <span id="currentFile">— no file selected —</span>
           <div class="btn-row inline">
-            <button class="neon-btn small" id="saveBtn">💾 Save & Restart</button>
-            <button class="neon-btn small danger" id="deleteFileBtn">🗑 Delete File</button>
+            <button class="neon-btn small" id="saveBtn">💾 Save File</button>
+            <button class="neon-btn small" id="renameBtn">✏️ Rename</button>
+            <button class="neon-btn small danger" id="deleteFileBtn">🗑 Delete</button>
           </div>
         </div>
         <div id="editor" class="editor"></div>
       </div>
 
+      <!-- LOGS -->
       <div class="console-wrap">
         <div class="console-header">
           🖥 Live Logs
-          <button class="neon-btn tiny" id="refreshLogs">🔄 Refresh</button>
-          <button class="neon-btn tiny" id="clearLogs">🧹 Clear</button>
+          <div class="btn-row inline">
+            <button class="neon-btn tiny" id="refreshLogs">🔄</button>
+            <button class="neon-btn tiny" id="clearLogs">🧹</button>
+          </div>
         </div>
         <pre id="console" class="console">Select a project to view logs...</pre>
       </div>
+
     </div>
   </section>
 
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="app.js"></script>
 </body>
-          </html>
+    </html>
