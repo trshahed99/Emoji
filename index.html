@@ -21,7 +21,6 @@
   <!-- ============ CREATE PROJECT ============ -->
   <section class="panel">
     <h2 class="panel-title">🆕 New Project</h2>
-
     <div class="form-row">
       <input type="text" id="newProjectName" class="neon-input" placeholder="project_name (letters, numbers, _ -)">
       <button class="neon-btn big" id="createProjectBtn">➕ Create Project</button>
@@ -52,11 +51,34 @@
 
     <!-- STARTUP COMMANDS -->
     <div class="startup-section">
-      <h3 class="sub-title">🚀 Startup Commands <span class="hint">(এক container এ একাধিক ফাইল run করার জন্য — প্রতিটা লাইনে একটা command)</span></h3>
-      <textarea id="startupCommands" class="neon-textarea startup-box" placeholder="main.py&#10;bot.py&#10;worker.py"></textarea>
+      <h3 class="sub-title">
+        🚀 Startup Commands
+        <span class="hint">(একটা লাইনে একটা ফাইল — এক container এ multiple run হবে)</span>
+      </h3>
+      <textarea id="startupCommands" class="neon-textarea startup-box"
+                placeholder="main.py&#10;bot.py&#10;worker.py"></textarea>
       <div class="btn-row inline">
         <button class="neon-btn small" id="saveStartupBtn">💾 Save Startup Commands</button>
       </div>
+    </div>
+
+    <!-- PACKAGES -->
+    <div class="packages-section">
+      <h3 class="sub-title">
+        📦 Python Packages
+        <span class="hint">(একটা লাইনে একটা — যেমন: requests / flask==3.0.0)</span>
+      </h3>
+      <textarea id="reqTextarea" class="neon-textarea req-box"
+                placeholder="requests&#10;flask==3.0.0&#10;pytz&#10;python-telegram-bot"></textarea>
+      <div class="btn-row inline">
+        <button class="neon-btn small" id="saveReqBtn">💾 Save requirements.txt</button>
+        <button class="neon-btn small" id="installReqBtn">📦 Install Now</button>
+        <button class="neon-btn small danger" id="clearReqBtn">🧹 Clear</button>
+      </div>
+      <p class="hint" style="margin-top:8px;display:block;">
+        🤖 <b>Automatic:</b> "Start All" চাপলে requirements.txt auto-install হবে<br>
+        🔧 <b>Manual:</b> "Install Now" চাপলে সাথে সাথে install + Live Logs এ progress
+      </p>
     </div>
 
     <div class="workspace-grid">
@@ -88,8 +110,8 @@
         <div class="console-header">
           🖥 Live Logs
           <div class="btn-row inline">
-            <button class="neon-btn tiny" id="refreshLogs">🔄</button>
-            <button class="neon-btn tiny" id="clearLogs">🧹</button>
+            <button class="neon-btn tiny" id="refreshLogs">🔄 Refresh</button>
+            <button class="neon-btn tiny" id="clearLogs">🧹 Clear</button>
           </div>
         </div>
         <pre id="console" class="console">Select a project to view logs...</pre>
@@ -103,4 +125,4 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
 <script src="app.js"></script>
 </body>
-    </html>
+              </html>
