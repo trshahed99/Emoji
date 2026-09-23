@@ -1,3 +1,7 @@
+/* ============================================================
+   NeonPy Runner — Full Neon Stylesheet
+   ============================================================ */
+
 :root {
   --neon-cyan: #00fff7;
   --neon-pink: #ff00e0;
@@ -18,6 +22,9 @@ body {
   position: relative;
 }
 
+/* ============================================================
+   Animated Neon Grid Background
+   ============================================================ */
 .grid-bg {
   position: fixed; inset: 0;
   background-image:
@@ -32,11 +39,18 @@ body {
   to   { background-position: 40px 40px, 40px 40px; }
 }
 
+/* ============================================================
+   Header
+   ============================================================ */
 .neon-header { text-align: center; padding: 36px 20px 20px; }
+
 .neon-title {
   font-size: 2.6rem;
   color: var(--neon-cyan);
-  text-shadow: 0 0 6px var(--neon-cyan), 0 0 18px var(--neon-cyan), 0 0 40px var(--neon-purple);
+  text-shadow:
+    0 0 6px var(--neon-cyan),
+    0 0 18px var(--neon-cyan),
+    0 0 40px var(--neon-purple);
   letter-spacing: 2px;
   animation: flicker 3s infinite alternate;
 }
@@ -46,6 +60,7 @@ body {
   50% { opacity: 0.6; }
   55% { opacity: 0.9; }
 }
+
 .neon-sub {
   color: var(--neon-pink);
   margin-top: 8px;
@@ -53,22 +68,35 @@ body {
   font-size: 0.95rem;
 }
 
+/* ============================================================
+   Layout
+   ============================================================ */
 .container {
-  max-width: 1200px; margin: 0 auto; padding: 20px;
-  display: grid; gap: 22px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  gap: 22px;
 }
 
+/* ============================================================
+   Panels
+   ============================================================ */
 .panel {
   background: var(--panel-bg);
   border: 1px solid var(--neon-cyan);
   border-radius: 14px;
   padding: 20px;
-  box-shadow: 0 0 12px rgba(0,255,247,0.35), inset 0 0 20px rgba(0,255,247,0.05);
+  box-shadow:
+    0 0 12px rgba(0,255,247,0.35),
+    inset 0 0 20px rgba(0,255,247,0.05);
   backdrop-filter: blur(6px);
   transition: box-shadow 0.3s;
 }
 .panel:hover {
-  box-shadow: 0 0 22px rgba(0,255,247,0.6), inset 0 0 30px rgba(255,0,224,0.08);
+  box-shadow:
+    0 0 22px rgba(0,255,247,0.6),
+    inset 0 0 30px rgba(255,0,224,0.08);
 }
 
 .panel-title {
@@ -78,16 +106,37 @@ body {
   font-size: 1.15rem;
   letter-spacing: 1px;
 }
+
 .sub-title {
   color: var(--neon-cyan);
   text-shadow: 0 0 6px var(--neon-cyan);
   font-size: 0.95rem;
   margin: 14px 0 8px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sub-title .hint {
+  font-size: 0.72rem;
+  color: #7ab8c8;
+  font-weight: normal;
+  text-shadow: none;
 }
 
-.form-row { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+/* ============================================================
+   Inputs
+   ============================================================ */
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
 .neon-input {
-  flex: 1; min-width: 200px;
+  flex: 1;
+  min-width: 200px;
   background: rgba(0,0,0,0.55);
   border: 1px solid var(--neon-purple);
   border-radius: 8px;
@@ -101,67 +150,18 @@ body {
 }
 .neon-input:focus {
   border-color: var(--neon-cyan);
-  box-shadow: 0 0 12px var(--neon-cyan), inset 0 0 10px rgba(0,255,247,0.2);
+  box-shadow:
+    0 0 12px var(--neon-cyan),
+    inset 0 0 10px rgba(0,255,247,0.2);
 }
 select.neon-input { cursor: pointer; }
 
-.upload-zone {
-  border: 2px dashed var(--neon-cyan);
-  border-radius: 12px;
-  padding: 26px;
-  text-align: center;
-  transition: all 0.3s;
-  cursor: pointer;
-}
-.upload-zone.dragover {
-  background: rgba(0,255,247,0.08);
-  box-shadow: 0 0 18px var(--neon-cyan);
-}
-.upload-zone p { margin-bottom: 12px; color: #aee9ff; }
-.neon-text { color: var(--neon-cyan); text-shadow: 0 0 8px var(--neon-cyan); font-weight: bold; }
-.upload-status { color: var(--neon-green); font-size: 0.85rem; margin-top: 10px !important; }
-
-.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; align-items: center; }
-.btn-row.inline { margin-top: 0; }
-.neon-btn {
-  background: transparent;
-  border: 2px solid var(--neon-cyan);
-  color: var(--neon-cyan);
-  padding: 9px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-shadow: 0 0 6px var(--neon-cyan);
-  box-shadow: 0 0 8px rgba(0,255,247,0.4), inset 0 0 8px rgba(0,255,247,0.15);
-  transition: all 0.22s;
-  font-size: 0.9rem;
-}
-.neon-btn:hover {
-  background: var(--neon-cyan);
-  color: #05060a;
-  text-shadow: none;
-  box-shadow: 0 0 18px var(--neon-cyan), 0 0 40px var(--neon-cyan);
-  transform: translateY(-2px);
-}
-.neon-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-.neon-btn.big { padding: 12px 32px; font-size: 1.05rem; }
-.neon-btn.small { padding: 6px 14px; font-size: 0.82rem; }
-.neon-btn.tiny { padding: 3px 10px; font-size: 0.72rem; }
-.neon-btn.danger {
-  border-color: var(--neon-pink);
-  color: var(--neon-pink);
-  text-shadow: 0 0 6px var(--neon-pink);
-  box-shadow: 0 0 8px rgba(255,0,224,0.4), inset 0 0 8px rgba(255,0,224,0.15);
-}
-.neon-btn.danger:hover {
-  background: var(--neon-pink);
-  color: #05060a;
-  box-shadow: 0 0 18px var(--neon-pink), 0 0 40px var(--neon-pink);
-}
-
+/* ============================================================
+   Textarea
+   ============================================================ */
 .neon-textarea {
-  width: 100%; min-height: 90px;
+  width: 100%;
+  min-height: 90px;
   background: rgba(0,0,0,0.6);
   border: 1px solid var(--neon-purple);
   border-radius: 8px;
@@ -175,12 +175,82 @@ select.neon-input { cursor: pointer; }
 }
 .neon-textarea:focus {
   border-color: var(--neon-cyan);
-  box-shadow: 0 0 14px var(--neon-cyan), inset 0 0 12px rgba(0,255,247,0.2);
+  box-shadow:
+    0 0 14px var(--neon-cyan),
+    inset 0 0 12px rgba(0,255,247,0.2);
 }
 
-.project-list { display: grid; gap: 10px; }
+/* ============================================================
+   Buttons — Neon
+   ============================================================ */
+.btn-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  align-items: center;
+}
+.btn-row.inline { margin-top: 0; }
+
+.neon-btn {
+  background: transparent;
+  border: 2px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-shadow: 0 0 6px var(--neon-cyan);
+  box-shadow:
+    0 0 8px rgba(0,255,247,0.4),
+    inset 0 0 8px rgba(0,255,247,0.15);
+  transition: all 0.22s;
+  font-size: 0.9rem;
+}
+.neon-btn:hover {
+  background: var(--neon-cyan);
+  color: #05060a;
+  text-shadow: none;
+  box-shadow: 0 0 18px var(--neon-cyan), 0 0 40px var(--neon-cyan);
+  transform: translateY(-2px);
+}
+.neon-btn:active { transform: translateY(0); }
+.neon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+.neon-btn.big { padding: 12px 32px; font-size: 1.05rem; }
+.neon-btn.small { padding: 6px 14px; font-size: 0.82rem; }
+.neon-btn.tiny { padding: 3px 10px; font-size: 0.72rem; }
+
+.neon-btn.danger {
+  border-color: var(--neon-pink);
+  color: var(--neon-pink);
+  text-shadow: 0 0 6px var(--neon-pink);
+  box-shadow:
+    0 0 8px rgba(255,0,224,0.4),
+    inset 0 0 8px rgba(255,0,224,0.15);
+}
+.neon-btn.danger:hover {
+  background: var(--neon-pink);
+  color: #05060a;
+  box-shadow: 0 0 18px var(--neon-pink), 0 0 40px var(--neon-pink);
+}
+
+/* ============================================================
+   Project List
+   ============================================================ */
+.project-list {
+  display: grid;
+  gap: 10px;
+}
+
 .project-card {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 12px 16px;
   border: 1px solid var(--neon-purple);
   border-radius: 10px;
@@ -204,19 +274,76 @@ select.neon-input { cursor: pointer; }
   font-size: 0.8rem;
   color: #7ab8c8;
   font-family: 'Courier New', monospace;
+  margin-top: 4px;
 }
-.project-card .pstatus.running { color: var(--neon-green); text-shadow: 0 0 6px var(--neon-green); }
-.project-card .pstatus.stopped { color: var(--neon-pink); text-shadow: 0 0 6px var(--neon-pink); }
+.project-card .pstatus.running {
+  color: var(--neon-green);
+  text-shadow: 0 0 6px var(--neon-green);
+}
+.project-card .pstatus.stopped {
+  color: var(--neon-pink);
+  text-shadow: 0 0 6px var(--neon-pink);
+}
 .project-card .actions { display: flex; gap: 6px; }
-.empty { color: #556; padding: 10px; text-align: center; }
 
+.empty {
+  color: #556;
+  padding: 10px;
+  text-align: center;
+}
+
+/* ============================================================
+   Workspace
+   ============================================================ */
+.workspace { animation: slideIn 0.4s ease; }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.workspace-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0,255,247,0.2);
+  margin-bottom: 10px;
+}
+
+/* ============================================================
+   Startup Commands Section
+   ============================================================ */
+.startup-section {
+  margin: 16px 0 20px;
+  padding: 14px;
+  border: 1px solid var(--neon-purple);
+  border-radius: 10px;
+  background: rgba(157,0,255,0.05);
+  box-shadow: inset 0 0 20px rgba(157,0,255,0.1);
+}
+
+.startup-box {
+  min-height: 90px !important;
+  margin-top: 8px !important;
+  border-color: var(--neon-cyan) !important;
+}
+
+/* ============================================================
+   Workspace Grid
+   ============================================================ */
 .workspace-grid {
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: 240px 1fr;
   grid-template-rows: auto auto;
   gap: 14px;
   margin-top: 14px;
 }
+
+/* ============================================================
+   File Tree
+   ============================================================ */
 .file-tree {
   grid-row: span 2;
   background: rgba(0,0,0,0.4);
@@ -224,9 +351,13 @@ select.neon-input { cursor: pointer; }
   border-radius: 10px;
   padding: 10px;
   overflow-y: auto;
-  max-height: 620px;
+  max-height: 640px;
 }
+
 .tree-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   color: var(--neon-pink);
   text-shadow: 0 0 6px var(--neon-pink);
   font-size: 0.9rem;
@@ -234,7 +365,9 @@ select.neon-input { cursor: pointer; }
   padding-bottom: 6px;
   border-bottom: 1px solid rgba(255,0,224,0.3);
 }
+
 #fileTree { list-style: none; }
+
 #fileTree li {
   padding: 6px 8px;
   margin-bottom: 4px;
@@ -257,46 +390,63 @@ select.neon-input { cursor: pointer; }
   color: var(--neon-cyan);
   text-shadow: 0 0 6px var(--neon-cyan);
 }
-#fileTree li.main-file::before { content: "⭐ "; }
 
+/* ============================================================
+   Editor
+   ============================================================ */
 .editor-wrap {
   background: rgba(0,0,0,0.4);
   border: 1px solid var(--neon-purple);
   border-radius: 10px;
   padding: 10px;
 }
+
 .editor-toolbar {
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 8px;
-  flex-wrap: wrap; gap: 8px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
+
 #currentFile {
   color: var(--neon-cyan);
   font-family: 'Courier New', monospace;
   font-size: 0.85rem;
   text-shadow: 0 0 6px var(--neon-cyan);
+  word-break: break-all;
 }
+
 .editor {
-  height: 400px;
+  height: 420px;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--neon-purple);
+  box-shadow: 0 0 14px rgba(157,0,255,0.4);
 }
 
+/* ============================================================
+   Console / Logs
+   ============================================================ */
 .console-wrap {
   background: rgba(0,0,0,0.4);
   border: 1px solid var(--neon-green);
   border-radius: 10px;
   padding: 10px;
 }
+
 .console-header {
-  display: flex; justify-content: space-between; align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   color: var(--neon-green);
   text-shadow: 0 0 6px var(--neon-green);
   font-size: 0.85rem;
   margin-bottom: 8px;
   gap: 8px;
 }
+
 .console {
   background: #000;
   color: var(--neon-green);
@@ -304,7 +454,7 @@ select.neon-input { cursor: pointer; }
   padding: 12px;
   border-radius: 6px;
   min-height: 180px;
-  max-height: 240px;
+  max-height: 260px;
   overflow-y: auto;
   border: 1px solid rgba(0,255,136,0.3);
   box-shadow: inset 0 0 15px rgba(0,255,136,0.1);
@@ -313,22 +463,29 @@ select.neon-input { cursor: pointer; }
   text-shadow: 0 0 3px rgba(0,255,136,0.6);
 }
 
-.workspace-header {
-  display: flex; justify-content: space-between; align-items: center;
-  flex-wrap: wrap; gap: 10px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid rgba(0,255,247,0.2);
-  margin-bottom: 6px;
-}
-
+/* ============================================================
+   Scrollbar
+   ============================================================ */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: #0a0c16; }
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(var(--neon-cyan), var(--neon-pink));
   border-radius: 4px;
 }
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(var(--neon-pink), var(--neon-cyan));
+}
 
+/* ============================================================
+   Responsive
+   ============================================================ */
 @media (max-width: 820px) {
   .workspace-grid { grid-template-columns: 1fr; }
-  .file-tree { grid-row: auto; max-height: 200px; }
-       }
+  .file-tree { grid-row: auto; max-height: 220px; }
+  .editor { height: 320px; }
+  .neon-title { font-size: 2rem; }
+  .container { padding: 12px; }
+  .panel { padding: 14px; }
+  .neon-btn { font-size: 0.82rem; padding: 8px 14px; }
+  .neon-btn.big { padding: 10px 22px; font-size: 0.95rem; }
+  }
