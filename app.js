@@ -1,5 +1,5 @@
 // ============================================================
-//  NeonPy Runner — Frontend (Create/Edit/Run Edition)
+//  NeonPy Runner — Frontend v4 (FINAL)
 // ============================================================
 
 let editor = null;
@@ -108,7 +108,7 @@ async function loadProjects() {
 }
 
 // ============================================================
-//  WORKSPACE — OPEN
+//  OPEN PROJECT
 // ============================================================
 async function openProject(name) {
   currentProject = name;
@@ -120,9 +120,8 @@ async function openProject(name) {
   const data = await res.json();
   if (!res.ok) return alert('Failed to load project');
 
-  // Startup commands
   document.getElementById('startupCommands').value = (data.startup || []).join('\n');
-
+  await loadRequirements(name);
   renderFileTree(data.files);
   refreshLogs();
 
@@ -166,7 +165,6 @@ async function loadFile(name, path) {
   }
   editor.setValue(data.content);
 
-  // Language detection
   const ext = path.split('.').pop().toLowerCase();
   const langMap = {
     py: 'python', js: 'javascript', html: 'html', css: 'css',
@@ -269,7 +267,7 @@ document.getElementById('deleteFileBtn').onclick = async () => {
 };
 
 // ============================================================
-//  STARTUP COMMANDS — SAVE
+//  STARTUP COMMANDS
 // ============================================================
 document.getElementById('saveStartupBtn').onclick = async () => {
   if (!currentProject) return;
@@ -284,6 +282,60 @@ document.getElementById('saveStartupBtn').onclick = async () => {
   const data = await res.json();
   if (!res.ok) return alert('❌ ' + (data.detail || 'Save failed'));
   alert('✅ Startup commands saved!');
+};
+
+// ============================================================
+//  PACKAGES
+// ============================================================
+async function loadRequirements(name) {
+  const res = await fetch(`/api/project/${name}/requirements`);
+  const data = await res.json();
+  document.getElementById('reqTextarea').value = data.content || '';
+}
+
+document.getElementById('saveReqBtn').onclick = async () => {
+  if (!currentProject) return alert('Open a project first');
+  const content = document.getElementById('reqTextarea').value;
+
+  const res = await fetch(`/api/project/${currentProject}/requirements`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: currentProject, content }),
+  });
+  const data = await res.json();
+  if (!res.ok) return alert('❌ ' + (data.detail || 'Save failed'));
+  alert('✅ requirements.txt saved!');
+};
+
+document.getElementById('installReqBtn').onclick = async () => {
+  if (!currentProject) return alert('Open a project first');
+
+  const btn = document.getElementById('installReqBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Installing...';
+
+  try {
+    const res = await fetch(`/api/project/${currentProject}/install`, {
+      method: 'POST',
+    });
+    const data = await res.json();
+    if (data.ok) {
+      alert('✅ Installation complete!');
+    } else {
+      alert('❌ Install failed:\n\n' + (data.msg || 'unknown'));
+    }
+    refreshLogs();
+  } catch (err) {
+    alert('❌ Network error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📦 Install Now';
+  }
+};
+
+document.getElementById('clearReqBtn').onclick = () => {
+  if (!confirm('Clear requirements.txt content?')) return;
+  document.getElementById('reqTextarea').value = '';
 };
 
 // ============================================================
