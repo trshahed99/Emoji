@@ -18,7 +18,6 @@
 
 <main class="container">
 
-  <!-- Upload Zone -->
   <section class="panel" id="uploadPanel">
     <h2 class="panel-title">📦 Deploy New Bot</h2>
 
@@ -48,7 +47,6 @@
     </div>
   </section>
 
-  <!-- Projects List -->
   <section class="panel">
     <h2 class="panel-title">🤖 My Bots</h2>
     <div id="projectList" class="project-list">
@@ -56,9 +54,7 @@
     </div>
   </section>
 
-  <!-- Workspace (hidden until a project selected) -->
   <section class="panel workspace" id="workspace" style="display:none;">
-
     <div class="workspace-header">
       <h2 class="panel-title" id="wsTitle">📁 Project</h2>
       <div class="btn-row inline">
@@ -71,14 +67,11 @@
     </div>
 
     <div class="workspace-grid">
-
-      <!-- File tree -->
       <aside class="file-tree">
         <div class="tree-header">🗂 Files</div>
         <ul id="fileTree"></ul>
       </aside>
 
-      <!-- Editor -->
       <div class="editor-wrap">
         <div class="editor-toolbar">
           <span id="currentFile">—</span>
@@ -90,7 +83,6 @@
         <div id="editor" class="editor"></div>
       </div>
 
-      <!-- Console -->
       <div class="console-wrap">
         <div class="console-header">
           🖥 Live Logs
@@ -99,9 +91,7 @@
         </div>
         <pre id="console" class="console">Select a project to view logs...</pre>
       </div>
-
     </div>
-
   </section>
 
 </main>
@@ -110,4 +100,4 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="app.js"></script>
 </body>
-  </html>
+          </html>
